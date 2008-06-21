@@ -70,7 +70,7 @@ class Crossworder
     @requested_words = options[:requested_words] || []
     @parser = Parser.new(Patterns)
     @h_pattern = @parser.horizontal_words
-    @v_pattern = options[:v_pattern] || {}
+    @v_pattern = @parser.vertical_words
     @grid = Grid.new
   end
 
@@ -80,7 +80,6 @@ class Crossworder
     incomplete = true
     while incomplete == true do
       @h_pattern.each do |h_pat|
-        #h_pat = @h_pattern[0]
         coord = [h_pat.x_pos, h_pat.y_pos]
         length = h_pat.length
         word = find_word(find_horiz_pattern(coord, length), coord, length)
@@ -90,14 +89,16 @@ class Crossworder
 
       h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
-      #     @v_pattern.each_pair do |coord, length|
-      #       word = find_word(find_vert_pattern(coord, length), coord, length)
-      #       incomplete = false if word 
-      #       v_words << [word, coord]
-      #     end
+      @v_pattern.each do |h_pat|
+        coord = [h_pat.x_pos, h_pat.y_pos]
+        length = h_pat.length
+        word = find_word(find_vert_pattern(coord, length), coord, length)
+        incomplete = false if word 
+        v_words << [word, coord]
+      end
     end
 
-    #    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
+    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
   def display
@@ -149,7 +150,7 @@ class Crossworder
 
   def stuff_into_words_vert(line, coord)
     line.split(//).each_with_index do |char, i|
-      @grid.put(coord[0], coord[1] + 1, char)
+      @grid.put(coord[0], coord[1] + i, char)
     end
   end
 
