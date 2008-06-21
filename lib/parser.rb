@@ -36,13 +36,13 @@ class Parser
 
 end
 
-grid = [  'xxx xxx',
-          ' x   x ',
-          ' x xxxx',
-          ' x   x ',
-          'xxxx x ',
-          ' x   x ',
-          ' xxxxxx']
-          
-parser = Parser.new(grid)
-raise parser.horizontal_words.inspect
+# grid = [  'xxx xxx',
+#           ' x   x ',
+#           ' x xxxx',
+#           ' x   x ',
+#           'xxxx x ',
+#           ' x   x ',
+#           ' xxxxxx']
+#           
+# parser = Parser.new(grid)
+# raise parser.horizontal_words.inspect
