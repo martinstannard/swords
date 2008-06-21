@@ -45,7 +45,10 @@ GRID = [
 class Crossworder
 
   def initialize(options = {})
-    @used_words = []
+    @used_words = {
+                    'across'  =>  [],
+                    'down'  =>  []
+                  }
     @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
 
     @dict_words = @dict.keys.sort_by {rand}
@@ -68,7 +71,7 @@ class Crossworder
     incomplete = true
     while incomplete == true do
       @h_pattern.each_pair do |coord, length|
-        word = find_word(find_horiz_pattern(coord, length).join, coord, length)
+        word = find_word(find_horiz_pattern(coord, length).join, coord, length, 'across')
         incomplete = false if word 
         @h_words << [word, coord]
       end
@@ -76,7 +79,7 @@ class Crossworder
       @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
       @v_pattern.each_pair do |coord, length|
-        word = find_word(find_vert_pattern(coord, length), coord, length)
+        word = find_word(find_vert_pattern(coord, length), coord, length, 'down')
         incomplete = false if word 
         @v_words << [word, coord]
       end
@@ -85,19 +88,19 @@ class Crossworder
     @v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
-  def find_word(pattern, coord, length)
-    word = find_word_from_dict(pattern, coord, length, @requested_words)
-    find_word_from_dict(pattern, coord, length, @dict_words) unless word
+  def find_word(pattern, coord, length, dir)
+    word = find_word_from_dict(pattern, coord, length, @requested_words, dir)
+    find_word_from_dict(pattern, coord, length, @dict_words, dir) unless word
   end
 
-  def find_word_from_dict(pattern, coord, length, word_list)
+  def find_word_from_dict(pattern, coord, length, word_list, dir)
     word_list.each do |l|
       line = l.to_s.strip
       next unless line.size == length
       r = Regexp.new(pattern)
       md = line.match(r)
-      if !md.nil? && !@used_words.include?(line) && !line.match(/[A-Z]/)
-        @used_words << line
+      if !md.nil? && !@used_words[dir].include?(line) && !line.match(/[A-Z]/)
+        @used_words[dir] << line
         return line
       end
     end 
@@ -112,7 +115,9 @@ class Crossworder
       puts
     end
     puts "Across:"
-    display_clues @used_words
+    display_clues @used_words['across']
+    puts "Down:"
+    display_clues @used_words['down']
   end
 
   def display_clues(words)
