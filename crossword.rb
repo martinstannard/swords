@@ -3,9 +3,9 @@ require 'lib/parser'
 require 'pathname'
 require "yaml"
 require 'pp'
+require 'yaml'
 
 Patterns = [
-            [
               'xxxxxxx xxxxxxx',
               ' x x x x x x x ',
               'xxxxxxxxxx xxxx',
@@ -22,70 +22,94 @@ Patterns = [
               ' x x x x x x x ',
               'xxxxxxx xxxxxxx'
             ]
-          ]
 
 requested_words = ['rails','ruby','beer','jour']
 
-HP = {[0,0] =>  6, [2,3]  =>  4, [4,0] =>  4, [6,1] => 6 }
-VP = {[0,1] =>  7, [0,5]  =>  7}
+class Grid
 
+  def initialize(columns = 15, rows = 15)
+    @columns = columns
+    @rows = rows
+    @grid = Hash.new {|h, k| h[k] = nil }
+  end
 
-GRID = [
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil]
-]
+  def put(x, y, value)
+    coord = [x,y]
+    @grid[coord] = value
+  end
 
+  def get(x, y)
+    coord = [x,y]
+    @grid[coord]
+  end
 
+  def display
+    @rows.times do |y|
+      @columns.times do |x|
+        coord = [x,y]
+        cell = @grid[coord]
+        print(cell.nil? ? " " : cell)
+      end
+      puts
+    end
+  end
+
+end
 
 class Crossworder
 
   def initialize(options = {})
     @used_words = {
-                    'across'  =>  [],
-                    'down'  =>  []
+                    :horizontal  =>  [],
+                    :vertical  =>  []
                   }
     @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
-
     @dict_words = @dict.keys.sort_by {rand}
-    @h_pattern = options[:h_pattern] || {}
-    @v_pattern = options[:v_pattern] || {}
     @requested_words = options[:requested_words] || []
-    @grid = options[:grid] || [[nil]]
     @parser = Parser.new(Patterns)
+    @h_pattern = @parser.horizontal_words
+    @v_pattern = @parser.vertical_words
+    @grid = Grid.new
     @h_words = []
     @v_words = []
 
   end
 
-  def read_q_and_a
-    @q_and_a = YAML.load(open('lib/q_and_a.yml'))
-  end
-
   def build
-
-    incomplete = true
-    while incomplete == true do
-      @h_pattern.each_pair do |coord, length|
-        word = find_word(find_horiz_pattern(coord, length).join, coord, length, 'across')
-        incomplete = false if word 
-        @h_words << [word, coord]
-      end
-
+  
+    @h_pattern.each do |word_vector|
+      
+      dir = :horizontal
+      len = word_vector.length
+      coord = [word_vector.x_pos,word_vector.y_pos]
+      pattern = find_horiz_pattern(coord,len)
+      word = find_word(pattern, coord, len, dir)
+      @h_words << [word, coord]
       @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
-
-      @v_pattern.each_pair do |coord, length|
-        word = find_word(find_vert_pattern(coord, length), coord, length, 'down')
-        incomplete = false if word 
-        @v_words << [word, coord]
-      end
+      
     end
-
-    @v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
+    
+    all_is_well = true
+      
+    while all_is_well == true do
+      
+      @v_pattern.each do |word_vector|
+        
+        dir = :vertical
+        len = word_vector.length
+        coord = [word_vector.x_pos,word_vector.y_pos]
+        pattern = find_vert_pattern(coord,len)
+        word = find_word(pattern, coord, len, dir)
+        all_is_well = false if word.nil?
+        @v_words << [word, coord]
+        @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
+        
+      end
+      
+    end
+    #The vertical words aren't being filled in completely. It's probably hard to find words fitting the requirements. If we do the loop we need to make it fill it could end up taking a very long time, I suppose.
+    #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
+    
   end
 
   def find_word(pattern, coord, length, dir)
@@ -108,16 +132,11 @@ class Crossworder
   end
 
   def display
-    @grid.each do |line|
-      line.each do |c|
-        print(c.nil? ? "*" : c)
-      end
-      puts
-    end
+    @grid.display
     puts "Across:"
-    display_clues @used_words['across']
+    display_clues @used_words[:horizontal]
     puts "Down:"
-    display_clues @used_words['down']
+    display_clues @used_words[:vertical]
   end
 
   def display_clues(words)
@@ -131,29 +150,32 @@ class Crossworder
   end
 
   def find_horiz_pattern(coord, length)
-    row = @grid[coord[0]]
-    pattern = row[coord[1]..length-1].collect {|cell| cell.nil? ? '\w' : cell}
+    pattern = ''
+    0.upto(length-1) do |i|
+      cell = @grid.get(coord[0] + i, coord[1])
+      pattern += (cell.nil? ? '\w' : cell)
+    end
     pattern
   end
 
   def find_vert_pattern(coord, length)
-    re = ''
-    0.upto(length-1) do |offset|
-      cell = @grid[coord[0] + offset][coord[1]]
-      re += cell.nil? ? '\w' : cell
+    pattern = ''
+    0.upto(length-1) do |i|
+      cell = @grid.get(coord[0], coord[1] + i)
+      pattern += (cell.nil? ? '\w' : cell)
     end
-    re
+    pattern
   end
 
-  def stuff_into_words_horiz(line, coords)
+  def stuff_into_words_horiz(line, coord)
     line.split(//).each_with_index do |char, i|
-      @grid[coords[0]][i + coords[1]] = char
+      @grid.put(coord[0] + i, coord[1], char)
     end
   end
 
-  def stuff_into_words_vert(line, coords)
+  def stuff_into_words_vert(line, coord)
     line.split(//).each_with_index do |char, i|
-      @grid[i][coords[1]] = char
+      @grid.put(coord[0], coord[1] + i, char)
     end
   end
 
@@ -162,7 +184,7 @@ end
 
 if __FILE__ == $0
 
-  cw = Crossworder.new({:h_pattern => HP, :v_pattern => VP, :grid => GRID})
+  cw = Crossworder.new
 
   cw.build
 
