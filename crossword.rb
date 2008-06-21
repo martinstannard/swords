@@ -1,9 +1,10 @@
 #!/usr/bin/ruby
+require 'lib/parser'
 require 'pathname'
 require 'pp'
 
-patterns = [
-            [
+Patterns = [
+  [
               'xxxxxxx xxxxxxx',
               ' x x x x x x x ',
               'xxxxxxxxxx xxxx',
@@ -19,8 +20,8 @@ patterns = [
               'xxxx xxxxxxxxxx',
               ' x x x x x x x ',
               'xxxxxxx xxxxxxx'
-            ]
-          ]
+]
+]
 
 requested_words = ['rails','ruby','beer','jour']
 
@@ -49,6 +50,8 @@ class Crossworder
     @v_pattern = options[:v_pattern] || {}
     @requested_words = options[:requested_words] || []
     @grid = options[:grid] || [[nil]]
+    @parser = Parser.new(Patterns)
+
   end
 
   def read_q_and_a
@@ -56,21 +59,31 @@ class Crossworder
   end
 
   def build
+    h_words = []
+    v_words = []
+    incomplete = true
+    while incomplete == true do
+      @h_pattern.each_pair do |coord, length|
+        word = find_word(find_horiz_pattern(coord, length).join, coord, length)
+        incomplete = false if word 
+        h_words << [word, coord]
+      end
 
-    @h_pattern.each_pair do |coord, length|
-      word = find_word(find_horiz_pattern(coord, length).join, coord, length)
-      stuff_into_words_horiz(word, coord)
+      h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
+
+      @v_pattern.each_pair do |coord, length|
+        word = find_word(find_vert_pattern(coord, length), coord, length)
+        incomplete = false if word 
+        v_words << [word, coord]
+      end
     end
 
-    @v_pattern.each_pair do |coord, length|
-      word = find_word(find_vert_pattern(coord, length), coord, length)
-      stuff_into_words_vert(word, coord)
-    end
+    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
   def find_word(pattern, coord, length)
-      word = find_word_from_dict(pattern, coord, length, @requested_words)
-      find_word_from_dict(pattern, coord, length, @dict_words) unless word
+    word = find_word_from_dict(pattern, coord, length, @requested_words)
+    find_word_from_dict(pattern, coord, length, @dict_words) unless word
   end
 
   def find_word_from_dict(pattern, coord, length, word_list)
