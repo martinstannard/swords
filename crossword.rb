@@ -4,7 +4,6 @@ require 'pathname'
 require 'pp'
 
 Patterns = [
-  [
               'xxxxxxx xxxxxxx',
               ' x x x x x x x ',
               'xxxxxxxxxx xxxx',
@@ -21,7 +20,6 @@ Patterns = [
               ' x x x x x x x ',
               'xxxxxxx xxxxxxx'
 ]
-]
 
 requested_words = ['rails','ruby','beer','jour']
 
@@ -30,28 +28,43 @@ VP = {[0,1] =>  7, [0,5]  =>  7}
 
 
 GRID = [
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil]
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil]
 ]
 
 
 
 class Crossworder
 
+  
   def initialize(options = {})
     @used_words = []
+    @used_words = []
     @dict_words = File.readlines("/usr/share/dict/words").sort_by { rand }
-    @h_pattern = options[:h_pattern] || {}
     @v_pattern = options[:v_pattern] || {}
     @requested_words = options[:requested_words] || []
-    @grid = options[:grid] || [[nil]]
+    @grid = options[:grid] || GRID
     @parser = Parser.new(Patterns)
-
+    @h_pattern = @parser.horizontal_words
   end
 
   def read_q_and_a
@@ -63,22 +76,26 @@ class Crossworder
     v_words = []
     incomplete = true
     while incomplete == true do
-      @h_pattern.each_pair do |coord, length|
+      @h_pattern.each do |h_pat|
+        coord = [h_pat.x_pos, h_pat.y_pos]
+        puts coord
+        length = h_pat.length
         word = find_word(find_horiz_pattern(coord, length).join, coord, length)
+        puts word
         incomplete = false if word 
         h_words << [word, coord]
       end
 
       h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
-      @v_pattern.each_pair do |coord, length|
-        word = find_word(find_vert_pattern(coord, length), coord, length)
-        incomplete = false if word 
-        v_words << [word, coord]
-      end
+ #     @v_pattern.each_pair do |coord, length|
+ #       word = find_word(find_vert_pattern(coord, length), coord, length)
+ #       incomplete = false if word 
+ #       v_words << [word, coord]
+ #     end
     end
 
-    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
+#    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
   def find_word(pattern, coord, length)
@@ -141,7 +158,7 @@ end
 
 if __FILE__ == $0
 
-  cw = Crossworder.new({:h_pattern => HP, :v_pattern => VP, :grid => GRID})
+  cw = Crossworder.new({:h_pattern => HP, :v_pattern => VP})#, :grid => GRID})
 
   cw.build
 

@@ -26,6 +26,7 @@ class Parser
   
   def discover_words(line)
     word_vectors = []
+    puts line
     s = StringScanner.new(line)
     while word = (s.scan_until /\S{2,}/)
       word = word.match(/\S{2,}$/)[0]
