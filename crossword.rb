@@ -39,25 +39,29 @@ class Crossworder
     @grid = options[:grid] || [[nil]]
   end
 
+  def read_q_and_a
+    @q_and_a = YAML.load(open('lib/q_and_a.yml'))
+  end
+
   def build
 
     @h_pattern.each_pair do |coord, length|
-      pattern = find_horiz_pattern(coord, length).join
-      word = find_word(pattern, coord, length, @requested_words)
-      word = find_word(pattern, coord, length, @dict_words) unless word
+      word = find_word(find_horiz_pattern(coord, length).join, coord, length)
       stuff_into_words_horiz(word, coord)
     end
 
     @v_pattern.each_pair do |coord, length|
-      pattern = find_vert_pattern(coord, length)
-      word = find_word(pattern, coord, length, @requested_words)
-      word = find_word(pattern, coord, length, @dict_words) unless word
+      word = find_word(find_vert_pattern(coord, length), coord, length)
       stuff_into_words_vert(word, coord)
     end
-
   end
 
-  def find_word(pattern, coord, length, word_list)
+  def find_word(pattern, coord, length)
+      word = find_word_from_dict(pattern, coord, length, @requested_words)
+      find_word_from_dict(pattern, coord, length, @dict_words) unless word
+  end
+
+  def find_word_from_dict(pattern, coord, length, word_list)
     word_list.each do |l|
       line = l.strip
       next unless line.size == length
