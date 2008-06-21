@@ -2,19 +2,31 @@
 require 'pathname'
 require 'pp'
 
-#Not @used_words yet
-pattern = [
-  [:x,:x,:x,:x,:x,:x],
-  [:x,:o,:x,:o,:o],
-  [:x,:x,:x,:x],
-  [:x,:o,:x,:o],
-  [:x],
-  [:x]
-]
+patterns = [
+            [
+              'xxxxxxx xxxxxxx',
+              ' x x x x x x x ',
+              'xxxxxxxxxx xxxx',
+              ' x x x x x x x ',
+              'xxxxxxxxxxxxxxx',
+              ' x   x x x x x ',
+              'xxxxxxxxx xxxxx',
+              '   x x x x x   ',
+              'xxxxx xxxxxxxxx',
+              ' x x x x x   x ',
+              'xxxxxxxxxxxxxxx',
+              ' x x x x x x x ',
+              'xxxx xxxxxxxxxx',
+              ' x x x x x x x ',
+              'xxxxxxx xxxxxxx'
+            ]
+          ]
 
+requested_words = ['rails','ruby','beer','jour']
 
-HP = {[0,0] => 3, [2,0] => 3, [6,3] => 3}
-VP = {[0,0] => 3}
+HP = {[0,0] =>  6, [2,3]  =>  4, [4,0] =>  4, [6,1] => 6 }
+VP = {[0,1] =>  7, [0,5]  =>  7}
+
 
 GRID = [
   [nil,nil,nil,nil,nil,nil,nil],
@@ -23,7 +35,7 @@ GRID = [
   [nil,nil,nil,nil,nil,nil,nil],
   [nil,nil,nil,nil,nil,nil,nil],
   [nil,nil,nil,nil,nil,nil,nil],
-  [nil,nil,nil,nil,nil,nil,nil],
+  [nil,nil,nil,nil,nil,nil,nil]
 ]
 
 
