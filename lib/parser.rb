@@ -90,6 +90,7 @@ class Parser
   
   def discover_words(line)
     word_vectors = []
+    puts line
     s = StringScanner.new(line)
     
     # Iterate, scanning for two or more 'x' characters
