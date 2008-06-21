@@ -21,6 +21,11 @@
 #  = direction [horizontal | vertical]
 #  - x_pos, integer horizontal co-ordinate from the top left of the grid
 #  - y_pos, integer vertical co-ordinate from the top let o the grid
+#
+# Usage
+# =====
+# parser = Parser.new(grid)
+# word_vectors = parser.generate
     
 
 require 'strscan'
