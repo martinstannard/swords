@@ -63,8 +63,10 @@ end
 class Crossworder
 
   def initialize(options = {})
-    @used_words = []
-    @dict_words = File.readlines("/usr/share/dict/words").sort_by { rand }
+    @used_words = {
+                    'across'  =>  [],
+                    'down'  =>  []
+                  }
     @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
 
     @dict_words = @dict.keys.sort_by {rand}
@@ -84,20 +86,16 @@ class Crossworder
 
     incomplete = true
     while incomplete == true do
-      @h_pattern.each do |h_pat|
-        coord = [h_pat.x_pos, h_pat.y_pos]
-        length = h_pat.length
-        word = find_word(find_horiz_pattern(coord, length), coord, length)
+      @h_pattern.each_pair do |coord, length|
+        word = find_word(find_horiz_pattern(coord, length).join, coord, length, 'across')
         incomplete = false if word 
         @h_words << [word, coord]
       end
 
       @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
-      @v_pattern.each do |h_pat|
-        coord = [h_pat.x_pos, h_pat.y_pos]
-        length = h_pat.length
-        word = find_word(find_vert_pattern(coord, length), coord, length)
+      @v_pattern.each_pair do |coord, length|
+        word = find_word(find_vert_pattern(coord, length), coord, length, 'down')
         incomplete = false if word 
         @v_words << [word, coord]
       end
@@ -106,27 +104,36 @@ class Crossworder
     @v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
-  def display
-    @grid.display
+  def find_word(pattern, coord, length, dir)
+    word = find_word_from_dict(pattern, coord, length, @requested_words, dir)
+    find_word_from_dict(pattern, coord, length, @dict_words, dir) unless word
   end
 
-  def find_word(pattern, coord, length)
-    word = find_word_from_dict(pattern, coord, length, @requested_words)
-    find_word_from_dict(pattern, coord, length, @dict_words) unless word
-  end
-
-  def find_word_from_dict(pattern, coord, length, word_list)
+  def find_word_from_dict(pattern, coord, length, word_list, dir)
     word_list.each do |l|
       line = l.to_s.strip
       next unless line.size == length
       r = Regexp.new(pattern)
       md = line.match(r)
-      if !md.nil? && !@used_words.include?(line) && !line.match(/[A-Z]/)
-        @used_words << line
+      if !md.nil? && !@used_words[dir].include?(line) && !line.match(/[A-Z]/)
+        @used_words[dir] << line
         return line
       end
     end 
     nil
+  end
+
+  def display
+    @grid.each do |line|
+      line.each do |c|
+        print(c.nil? ? "*" : c)
+      end
+      puts
+    end
+    puts "Across:"
+    display_clues @used_words['across']
+    puts "Down:"
+    display_clues @used_words['down']
   end
 
   def display_clues(words)
