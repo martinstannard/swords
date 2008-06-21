@@ -13,8 +13,8 @@ pattern = [
 ]
 
 
-HP = {[0,0] => 6, [2,3] => 4, [4,0] => 4, [6,1] => 6}
-VP = {[0,1] => 7, [0,5] => 7}
+HP = {[0,0] => 3, [2,0] => 3, [6,3] => 3}
+VP = {[0,0] => 3}
 
 GRID = [
   [nil,nil,nil,nil,nil,nil,nil],
@@ -32,45 +32,43 @@ class Crossworder
 
   def initialize(options = {})
     @used_words = []
-    @dict_words = Pathname.new("/usr/share/dict/words")
-    @h_pattern = options[:@h_pattern] || {}
+    @dict_words = File.readlines("/usr/share/dict/words").sort_by { rand }
+    @h_pattern = options[:h_pattern] || {}
     @v_pattern = options[:v_pattern] || {}
+    @requested_words = options[:requested_words] || []
     @grid = options[:grid] || [[nil]]
   end
 
   def build
 
     @h_pattern.each_pair do |coord, length|
-      current_pattern = find_horiz_pattern(coord, length).join
-      @dict_words.each_line do |l|
-        line = l.strip
-        next unless line.size == length
-        r = Regexp.new(current_pattern)
-        md = line.match(r)
-        if !md.nil? && !@used_words.include?(line) && !line.match(/[A-Z]/)
-          @used_words << line
-          stuff_into_words_horiz(line, coord) 
-          break
-        end
-      end  
+      pattern = find_horiz_pattern(coord, length).join
+      word = find_word(pattern, coord, length, @requested_words)
+      word = find_word(pattern, coord, length, @dict_words) unless word
+      stuff_into_words_horiz(word, coord)
     end
-
 
     @v_pattern.each_pair do |coord, length|
-      current_pattern = find_vert_pattern(coord, length)
-      @dict_words.each_line do |l|
-        line = l.strip
-        next unless line.size == length
-        r = Regexp.new(current_pattern)
-        md = line.match(r)
-        if !md.nil? && !@used_words.include?(line) && !line.match(/[A-Z]/)
-          @used_words << line
-          stuff_into_words_vert(line, coord) 
-          break
-        end
-      end  
-
+      pattern = find_vert_pattern(coord, length)
+      word = find_word(pattern, coord, length, @requested_words)
+      word = find_word(pattern, coord, length, @dict_words) unless word
+      stuff_into_words_vert(word, coord)
     end
+
+  end
+
+  def find_word(pattern, coord, length, word_list)
+    word_list.each do |l|
+      line = l.strip
+      next unless line.size == length
+      r = Regexp.new(pattern)
+      md = line.match(r)
+      if !md.nil? && !@used_words.include?(line) && !line.match(/[A-Z]/)
+        @used_words << line
+        return line
+      end
+    end 
+    nil
   end
 
   def display
@@ -84,7 +82,8 @@ class Crossworder
 
   def find_horiz_pattern(coord, length)
     row = @grid[coord[0]]
-    row[coord[1]..length-1].collect {|cell| cell.nil? ? '\w' : cell}
+    pattern = row[coord[1]..length-1].collect {|cell| cell.nil? ? '\w' : cell}
+    pattern
   end
 
   def find_vert_pattern(coord, length)
@@ -98,7 +97,7 @@ class Crossworder
 
   def stuff_into_words_horiz(line, coords)
     line.split(//).each_with_index do |char, i|
-      @grid[coords[0]][i] = char
+      @grid[coords[0]][i + coords[1]] = char
     end
   end
 
@@ -114,6 +113,7 @@ end
 if __FILE__ == $0
 
   cw = Crossworder.new({:h_pattern => HP, :v_pattern => VP, :grid => GRID})
+
   cw.build
 
   cw.display
