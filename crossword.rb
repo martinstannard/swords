@@ -5,7 +5,7 @@ require "yaml"
 require 'pp'
 
 Patterns = [
-  [
+            [
               'xxxxxxx xxxxxxx',
               ' x x x x x x x ',
               'xxxxxxxxxx xxxx',
@@ -21,8 +21,8 @@ Patterns = [
               'xxxx xxxxxxxxxx',
               ' x x x x x x x ',
               'xxxxxxx xxxxxxx'
-]
-]
+            ]
+          ]
 
 requested_words = ['rails','ruby','beer','jour']
 
