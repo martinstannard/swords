@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require 'lib/parser'
 require 'pathname'
+require "yaml"
 require 'pp'
 require 'yaml'
 
@@ -63,20 +64,24 @@ class Crossworder
 
   def initialize(options = {})
     @used_words = []
-    @used_words = []
-    @x_size = options[:x_size] || 15
-    @y_size = options[:x_size] || 15
     @dict_words = File.readlines("/usr/share/dict/words").sort_by { rand }
+    @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
+
+    @dict_words = @dict.keys.sort_by {rand}
+    @h_pattern = options[:h_pattern] || {}
+    @v_pattern = options[:v_pattern] || {}
     @requested_words = options[:requested_words] || []
     @parser = Parser.new(Patterns)
     @h_pattern = @parser.horizontal_words
     @v_pattern = @parser.vertical_words
     @grid = Grid.new
+    @h_words = []
+    @v_words = []
+
   end
 
   def build
-    h_words = []
-    v_words = []
+
     incomplete = true
     while incomplete == true do
       @h_pattern.each do |h_pat|
@@ -84,21 +89,21 @@ class Crossworder
         length = h_pat.length
         word = find_word(find_horiz_pattern(coord, length), coord, length)
         incomplete = false if word 
-        h_words << [word, coord]
+        @h_words << [word, coord]
       end
 
-      h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
+      @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
       @v_pattern.each do |h_pat|
         coord = [h_pat.x_pos, h_pat.y_pos]
         length = h_pat.length
         word = find_word(find_vert_pattern(coord, length), coord, length)
         incomplete = false if word 
-        v_words << [word, coord]
+        @v_words << [word, coord]
       end
     end
 
-    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
+    @v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
   def display
@@ -112,7 +117,7 @@ class Crossworder
 
   def find_word_from_dict(pattern, coord, length, word_list)
     word_list.each do |l|
-      line = l.strip
+      line = l.to_s.strip
       next unless line.size == length
       r = Regexp.new(pattern)
       md = line.match(r)
@@ -122,6 +127,16 @@ class Crossworder
       end
     end 
     nil
+  end
+
+  def display_clues(words)
+    i = 1
+    words.each do |word|
+      clues = @dict[word]["si"].split ", "
+      clue = clues[rand*10 % clues.length]
+      puts "#{i}. " + clue
+      i = i + 1
+    end
   end
 
   def find_horiz_pattern(coord, length)
