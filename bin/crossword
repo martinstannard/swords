@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+$: << File.dirname(__FILE__) + '/../lib'
+
+require 'crossword'
+
+cw = Crossworder.new
+cw.build
+cw.display

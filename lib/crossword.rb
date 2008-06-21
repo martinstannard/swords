@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
-require 'lib/parser'
 require 'pathname'
 require "yaml"
 require 'pp'
-require 'yaml'
+require 'crossword/grid'
+require 'crossword/parser'
 
 Patterns = [
               'xxxxxxx xxxxxxx',
@@ -23,49 +23,15 @@ Patterns = [
               'xxxxxxx xxxxxxx'
             ]
 
-requested_words = ['rails','ruby','beer','jour']
-
-class Grid
-
-  def initialize(columns = 15, rows = 15)
-    @columns = columns
-    @rows = rows
-    @grid = Hash.new {|h, k| h[k] = nil }
-  end
-
-  def put(x, y, value)
-    coord = [x,y]
-    @grid[coord] = value
-  end
-
-  def get(x, y)
-    coord = [x,y]
-    @grid[coord]
-  end
-
-  def display
-    @rows.times do |y|
-      @columns.times do |x|
-        coord = [x,y]
-        cell = @grid[coord]
-        print(cell.nil? ? " " : cell)
-      end
-      puts
-    end
-  end
-
-end
-
 class Crossworder
-
   def initialize(options = {})
     @used_words = {
                     :horizontal  =>  [],
                     :vertical  =>  []
                   }
-    @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
+    @dict = YAML.load_file(File.dirname(__FILE__) + '/../yaml/dictionary.yml')
     @dict_words = @dict.keys.sort_by {rand}
-    @requested_words = options[:requested_words] || []
+    @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
     @parser = Parser.new(Patterns)
     @h_pattern = @parser.horizontal_words
     @v_pattern = @parser.vertical_words
@@ -86,15 +52,12 @@ class Crossworder
       word = find_word(pattern, coord, len, dir)
       @h_words << [word, coord]
       @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
-      
     end
     
     all_is_well = true
       
     while all_is_well == true do
-      
       @v_pattern.each do |word_vector|
-        
         dir = :vertical
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
@@ -103,7 +66,6 @@ class Crossworder
         all_is_well = false if word.nil?
         @v_words << [word, coord]
         @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
-        
       end
       
     end
@@ -141,6 +103,7 @@ class Crossworder
 
   def display_clues(words)
     i = 1
+    puts words.inspect
     words.each do |word|
       clues = @dict[word]["si"].split ", "
       clue = clues[rand*10 % clues.length]
@@ -178,16 +141,4 @@ class Crossworder
       @grid.put(coord[0], coord[1] + i, char)
     end
   end
-
-
-end
-
-if __FILE__ == $0
-
-  cw = Crossworder.new
-
-  cw.build
-
-  cw.display
-
 end
