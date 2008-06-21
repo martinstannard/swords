@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require 'lib/parser'
 require 'pathname'
+require "yaml"
 require 'pp'
 
 Patterns = [
@@ -45,12 +46,16 @@ class Crossworder
 
   def initialize(options = {})
     @used_words = []
-    @dict_words = File.readlines("/usr/share/dict/words").sort_by { rand }
+    @dict = File.open( 'dictionary.yml' ) { |yf| YAML::load( yf ) }
+
+    @dict_words = @dict.keys.sort_by {rand}
     @h_pattern = options[:h_pattern] || {}
     @v_pattern = options[:v_pattern] || {}
     @requested_words = options[:requested_words] || []
     @grid = options[:grid] || [[nil]]
     @parser = Parser.new(Patterns)
+    @h_words = []
+    @v_words = []
 
   end
 
@@ -59,26 +64,25 @@ class Crossworder
   end
 
   def build
-    h_words = []
-    v_words = []
+
     incomplete = true
     while incomplete == true do
       @h_pattern.each_pair do |coord, length|
         word = find_word(find_horiz_pattern(coord, length).join, coord, length)
         incomplete = false if word 
-        h_words << [word, coord]
+        @h_words << [word, coord]
       end
 
-      h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
+      @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
 
       @v_pattern.each_pair do |coord, length|
         word = find_word(find_vert_pattern(coord, length), coord, length)
         incomplete = false if word 
-        v_words << [word, coord]
+        @v_words << [word, coord]
       end
     end
 
-    v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
+    @v_words.each { |word| stuff_into_words_vert(*word) if word[0] }
   end
 
   def find_word(pattern, coord, length)
@@ -88,7 +92,7 @@ class Crossworder
 
   def find_word_from_dict(pattern, coord, length, word_list)
     word_list.each do |l|
-      line = l.strip
+      line = l.to_s.strip
       next unless line.size == length
       r = Regexp.new(pattern)
       md = line.match(r)
@@ -106,6 +110,18 @@ class Crossworder
         print(c.nil? ? "*" : c)
       end
       puts
+    end
+    puts "Across:"
+    display_clues @used_words
+  end
+
+  def display_clues(words)
+    i = 1
+    words.each do |word|
+      clues = @dict[word]["si"].split ", "
+      clue = clues[rand*10 % clues.length]
+      puts "#{i}. " + clue
+      i = i + 1
     end
   end
 
