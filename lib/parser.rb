@@ -3,12 +3,28 @@
 # Michael Koukoullis (mkoukoullis@gmail.com)
 #
 # Parses a crossword grid.  Well what is crossword grid?
+#
+# Example grid = [  'xxx xxx',
+#                   ' x   x ',
+#                   ' x xxxx',
+#                   ' x   x ',
+#                   'xxxx x ',
+#                   ' x   x ',
+#                   ' xxxxxx']
+#
 #  - An array of strings (of equal length)
 #  - Each string represents a positional horizontal line in the crossword
 #  - An 'x' in the string represents positional word character availability
 #  - A space in the string indicates a character cannot be used at that position in the crossword
+#
+# Return an array of word vectors, 
+#  = direction [horizontal | vertical]
+#  - x_pos, integer horizontal co-ordinate from the top left of the grid
+#  - y_pos, integer vertical co-ordinate from the top let o the grid
+    
 
 require 'strscan'
+require 'Matrix'
 
 class Parser
   class WordVector < Struct.new(:direction, :x_pos, :y_pos, :length)
@@ -17,6 +33,11 @@ class Parser
   
   def initialize(grid)
     @grid = grid
+  end
+  
+  # Main method to discover all horizontal and vertical word vectors
+  def generate
+    horizontal_words + vertical_words
   end
   
   # Discover horizontal words for a grid
@@ -36,8 +57,28 @@ class Parser
     word_vectors.flatten
   end
   
-  # Create word vectors for a line. 
-  # ==============================
+  # Discover vertical words for a grid
+  def vertical_words
+    word_vectors = []
+    inverted_grid = Matrix.rows(@grid.map { |line| line.split('') }).transpose.to_a.map {|line| line.join}
+    
+    inverted_grid.each_with_index do |line, index|
+      words = discover_words(line)
+      words.each do |word|
+        #Set the direction as 'discover_words' is direction agnostic
+        word.direction = :vertical
+        #Need to set the y_pos to the x_pos as the grid is inverted
+        word.y_pos = word.x_pos
+        word.x_pos = index
+      end
+      word_vectors << words
+    end
+    
+    word_vectors.flatten
+  end
+  
+  # Create word vectors for a line in the grid. 
+  # ==========================================
   # This method is sort of 'direction' agnostic, assumes we are always 
   # a horizontal line, storing the starting position of the word in the '
   # x_pos' of the word_vector
@@ -67,4 +108,4 @@ end
 #           ' xxxxxx']
 #           
 # parser = Parser.new(grid)
-# raise parser.horizontal_words.inspect
+# raise parser.generate.inspect
