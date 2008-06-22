@@ -14,7 +14,7 @@ module Swords
       @v_words = []
     end
 
-    def build(iterations = 20)
+    def build(iterations = 10)
       fill_words
       count = 0
       while filled_all_slots == false && count < iterations do
@@ -50,8 +50,8 @@ module Swords
       end
     end
 
-    def new_game
-      build
+    def new_game(iterations = 10)
+      build iterations
       { :words => @h_words + @v_words, :grid => @grid,
         :h_clues => clues(@h_words), :v_clues => clues(@v_words)}
     end

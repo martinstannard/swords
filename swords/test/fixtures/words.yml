@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  crossword_id: 1
+  answer: MyText
+  clue: MyString
+  col: 1
+  row: 1
+  direction: MyString
+
+two:
+  crossword_id: 1
+  answer: MyText
+  clue: MyString
+  col: 1
+  row: 1
+  direction: MyString
