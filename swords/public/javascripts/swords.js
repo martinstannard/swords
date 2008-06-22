@@ -15,7 +15,7 @@ function addLoadEvent (func)
 	}
 }
 
-function editCell ()
+function editCell (grid)
 {
 	if (!document.getElementsByTagName || !document.getElementById) 
 	{
@@ -37,7 +37,6 @@ function editCell ()
 					// Save its value
 					var existing_input = spans[0];	// There *should* be only one
 					value = existing_input.firstChild.nodeValue;
-					// Delete all spans to ensure things don't go awry. There should only be one, and we're assuming that above but I had an issue with extra spans and inputs being appended and didn't resolve it properly
 					for (var i=0; i < spans.length; i++) 
 					{
 						this.removeChild(spans[i]);
@@ -47,6 +46,10 @@ function editCell ()
 				var input = document.createElement('input');
 				input.setAttribute('maxlength', '1');
 				input.setAttribute('value', value);
+				input.onkeypress = function(event) 
+				{
+					// event.keyCode
+				};
 				input.onblur = function ()
 				{
 					// Save input value when it's done
@@ -54,7 +57,7 @@ function editCell ()
 					var user_input = document.createElement('span');
 					user_input.appendChild(value);
 					this.parentNode.replaceChild(user_input, this);
-					crosswordIsFull();
+					// crosswordIsFull(grid);
 				}
 				this.appendChild(input);
 				input.focus();
@@ -63,7 +66,7 @@ function editCell ()
 	}
 }
 
-function crosswordIsFull ()
+function crosswordIsFull (grid)
 {
 	if (!document.getElementsByTagName || !document.getElementById) 
 	{
@@ -80,15 +83,16 @@ function crosswordIsFull ()
 	{
 		if (cells[i].className != 'inactive') 
 		{
-			if (cells[i].getElementsByTagName('span').length == 0) 
+			var spans = cells[i].getElementsByTagName('span');
+			if (spans.length > 0) 
 			{
-				complete = false;
+				
 			}
 		}
 	}
 	if (complete) 
 	{
-		alert('You have filled it in');
+		alert("Congratulations!!! You have filled it in, but we can't tell you if it's right yet...");
 	}
 }
 
