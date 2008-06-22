@@ -41,11 +41,11 @@ class Crossworder
 
   def build
     @h_pattern.each do |word_vector|
-      dir = :horizontal
+      direction = :horizontal
       len = word_vector.length
       coord = [word_vector.x_pos,word_vector.y_pos]
       pattern = find_horiz_pattern(coord,len)
-      word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
+      word = @dictionary.find_word(pattern, coord, len, direction, @requested_words)
       @h_words << [word, coord]
       @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
     end
@@ -54,11 +54,11 @@ class Crossworder
       
     while all_is_well == true do
       @v_pattern.each do |word_vector|
-        dir = :vertical
+        direction = :vertical
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = find_vert_pattern(coord,len)
-        word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
+        word = @dictionary.find_word(pattern, coord, len, direction, @requested_words)
         all_is_well = false if word.nil?
         @v_words << [word, coord]
         @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
