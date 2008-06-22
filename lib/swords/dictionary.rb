@@ -1,4 +1,5 @@
-module Crossword
+require 'yaml'
+module Swords
   class Dictionary
     attr_accessor :dict, :dict_words, :used_words
     
