@@ -19,7 +19,7 @@ swords_gemspec = Gem::Specification.new do |s|
   s.homepage         = "http://swords.com"
   s.require_path     = "lib"
   s.autorequire      = "swords"
-  s.files            = %w(README Rakefile) + Dir.glob("{bin,lib,spec,yaml}/**/*")
+  s.files            = %w(README Rakefile) + Dir.glob("{bin,lib,patterns,spec,yaml}/**/*")
   s.executables      = %w(swords)
 end
 
