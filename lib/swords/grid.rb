@@ -17,6 +17,20 @@ module Swords
       end
     end
 
+    def find_pattern(coord, length, dir)
+      pattern = ''
+      0.upto(length-1) do |i|
+        case dir
+        when :horizontal
+          cell = get(coord[0] + i, coord[1])
+        when :vertical
+          cell = get(coord[0], coord[1] + i)
+        end
+        pattern += (cell.nil? ? '\w' : cell)
+      end
+      pattern
+    end
+
     def put(x, y, value)
       coord = [x,y]
       @grid[coord] = value
@@ -26,7 +40,7 @@ module Swords
       coord = [x,y]
       @grid[coord]
     end
-    
+
     def content
       { :grid => @grid, :rows => @rows, :columns => @columns,  }
     end

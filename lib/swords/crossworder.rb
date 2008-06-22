@@ -36,7 +36,7 @@ module Swords
         dir = :horizontal
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
-        pattern = find_horiz_pattern(coord,len)
+        pattern = @grid.find_pattern(coord, len, dir)
         word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
         @h_words << [word, coord, dir]
         @h_words.each { |word| @grid.insert_word(*word) if word[0]}
@@ -49,7 +49,7 @@ module Swords
         dir = :vertical
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
-        pattern = find_vert_pattern(coord,len)
+        pattern = @grid.find_pattern(coord, len, dir)
         word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
         @v_words << [word, coord, dir]
         @v_words.each { |word| @grid.insert_word(*word) if word[0]}
@@ -60,24 +60,6 @@ module Swords
     def new_game
       build
       { :words => @h_words + @v_words, :grid => @grid }
-    end
-
-    def find_horiz_pattern(coord, length)
-      pattern = ''
-      0.upto(length-1) do |i|
-        cell = @grid.get(coord[0] + i, coord[1])
-        pattern += (cell.nil? ? '\w' : cell)
-      end
-      pattern
-    end
-
-    def find_vert_pattern(coord, length)
-      pattern = ''
-      0.upto(length-1) do |i|
-        cell = @grid.get(coord[0], coord[1] + i)
-        pattern += (cell.nil? ? '\w' : cell)
-      end
-      pattern
     end
 
   end
