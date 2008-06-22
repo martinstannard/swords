@@ -15,6 +15,10 @@ module Swords
       coord = [x,y]
       @grid[coord]
     end
+    
+    def content
+      { :grid => @grid, :rows => @rows, :columns => @columns,  }
+    end
 
     def display
       @rows.times do |y|
