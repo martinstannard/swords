@@ -10,5 +10,9 @@ module Swords
       @clue = clue
     end
     
+    def no_answer
+      answer.nil?
+    end
+
   end
 end
