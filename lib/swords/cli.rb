@@ -14,7 +14,7 @@ module Swords
     end
     
     def display
-      @crossword.grid.display
+      display_grid(@crossword.grid)
       puts "Across:".bold
       display_clues @crossword.dictionary.used_words[:horizontal]
       puts "Down:".bold
@@ -28,6 +28,16 @@ module Swords
         clueline = "#{clue}  (" + "#{word.length}".bold + ")"
         puts "#{i}. " + clueline
         i = i + 1
+      end
+    end
+
+    def display_grid(grid)
+      grid.rows.times do |y|
+        grid.columns.times do |x|
+          cell = grid.grid[[x,y]]
+          print(cell.nil? ? " " : cell)
+        end
+        puts
       end
     end
   end

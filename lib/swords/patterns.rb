@@ -1,65 +1,20 @@
 module Swords
   class Pattern
+    attr_accessor :patterns
+
     def self.random
-      Patterns[rand(Patterns.size)]
+      patterns = new
+      patterns.read
+      patterns.patterns.sort_by {rand}.first[1]
+    end
+
+    def read
+      @patterns, count = {}, 0
+      File.readlines(File.dirname(__FILE__) + '/../../patterns/default.txt').each do |line|
+        count += 1 and next if line.strip.empty?
+        @patterns["#{count}"] ||= []
+        @patterns["#{count}"] << line[0..-2]
+      end
     end
   end
 end
-
-Patterns = [
-            [
-               'xxxx x  ',
-               ' x x x  ',
-               ' x xxxxx',
-               ' x x x x',
-               ' x xxxxx',
-               ' x     x',
-               'xxxx x  ',
-               ' x x x  ',
-               ' x xxxxx',
-               ' x x x x',
-               ' x xxxxx',
-               '       x',
-            ],
-            [ 
-              'xxxxx ',
-              ' x  x ',
-              ' x  x ',
-              ' x  x ',
-              ' x  x ',
-              ' xxxxx'
-            ],
-            [ 
-              '  xxxx',
-              ' x  x ',
-              ' x  x ',
-              ' x  x ',
-              ' x  x ',
-              'xxxx  '
-            ],
-            [ 
-              ' x   x ',
-              'xxxxxxx',
-              ' x   x ',
-              ' x   x ',
-              'xxxxxxx',
-              ' x   x '
-            ]
-]
-# [
-#   'xxxxxxx xxxxxxx',
-#   ' x x x x x x x ',
-#   'xxxxxxxxxx xxxx',
-#   ' x x x x x x x ',
-#   'xxxxxxxxxxxxxxx',
-#   ' x   x x x x x ',
-#   'xxxxxxxxx xxxxx',
-#   '   x x x x x   ',
-#   'xxxxx xxxxxxxxx',
-#   ' x x x x x   x ',
-#   'xxxxxxxxxxxxxxx',
-#   ' x x x x x x x ',
-#   'xxxx xxxxxxxxxx',
-#   ' x x x x x x x ',
-#   'xxxxxxx xxxxxxx'
-# ]
