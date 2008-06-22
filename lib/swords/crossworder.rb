@@ -3,9 +3,8 @@ module Swords
     attr_accessor :dictionary, :grid, :requested_words
 
     def initialize    
-      @dictionary = Swords::Dictionary.new
-      @grid = Swords::Grid.new
       @pattern = Swords::Pattern.random
+      @dictionary = Swords::Dictionary.new
       @parser = Swords::Parser.new(@pattern)
       @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
       @h_pattern = @parser.horizontal_words
@@ -15,6 +14,22 @@ module Swords
     end
 
     def build
+      @grid = Swords::Grid.new
+      horiz_words
+      count = 0
+      until vert_words == true || count > 100 do
+        @grid = Swords::Grid.new
+        @dictionary.reset
+        horiz_words
+        count += 1
+        puts "Retrying....#{count}"
+      end
+      #The vertical words aren't being filled in completely. It's probably hard to find words fitting the requirements. If we do the loop we need to make it fill it could end up taking a very long time, I suppose.
+      #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
+    end
+
+    def horiz_words
+      @h_words = []
       @h_pattern.each do |word_vector|
         dir = :horizontal
         len = word_vector.length
@@ -24,23 +39,20 @@ module Swords
         @h_words << [word, coord]
         @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
       end
-    
-      all_is_well = true
-      
-      while all_is_well == true do
-        @v_pattern.each do |word_vector|
-          dir = :vertical
-          len = word_vector.length
-          coord = [word_vector.x_pos,word_vector.y_pos]
-          pattern = find_vert_pattern(coord,len)
-          word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-          all_is_well = false if word.nil?
-          @v_words << [word, coord]
-          @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
-        end
+    end
+
+    def vert_words
+      @v_words = []
+      @v_pattern.each do |word_vector|
+        dir = :vertical
+        len = word_vector.length
+        coord = [word_vector.x_pos,word_vector.y_pos]
+        pattern = find_vert_pattern(coord,len)
+        word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
+        @v_words << [word, coord]
+        @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
       end
-      #The vertical words aren't being filled in completely. It's probably hard to find words fitting the requirements. If we do the loop we need to make it fill it could end up taking a very long time, I suppose.
-      #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
+      @v_words.detect(nil) { |w| w[0].nil? }.nil?
     end
 
     def display
@@ -92,7 +104,7 @@ module Swords
     def stuff_into_words_vert(line, coord)
       line.split(//).each_with_index do |char, i|
         @grid.put(coord[0], coord[1] + i, char)
-       end
+      end
     end
   end
 end

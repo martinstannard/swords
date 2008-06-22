@@ -5,10 +5,15 @@ module Swords
     
     def initialize
       @dict = YAML.load_file(File.dirname(__FILE__) + '/../../yaml/dictionary.yml')
+      @used_words = { :horizontal  =>  [], :vertical  =>  [] }
+      @dict_words = @dict.keys.sort_by {rand}
+    end
+    
+    def reset
       @dict_words = @dict.keys.sort_by {rand}
       @used_words = { :horizontal  =>  [], :vertical  =>  [] }
     end
-    
+
     def find_word(pattern, coord, length, dir, requested_words)
       word = find_word_from_dict(pattern, coord, length, requested_words, dir)
       find_word_from_dict(pattern, coord, length, @dict_words, dir) unless word

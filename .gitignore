@@ -2,6 +2,7 @@ swords/log/*.log
 tmp/**/*
 config/database.yml
 *.swp
+pkg
 
 # Other useful tidbits
 .DS_Store
