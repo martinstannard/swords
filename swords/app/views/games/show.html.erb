@@ -31,3 +31,7 @@
 	</ol>
 	
 </div>
+
+<script type="text/javascript" charset="utf-8">
+  var grid = <%= @grid.grid.select {|k, v| !v.nil?}.to_json %>;
+</script>

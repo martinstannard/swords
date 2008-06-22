@@ -11,23 +11,31 @@ xxxx x
  x xxxxx
        x
 
+xxxxx  
+x x x  
+x xxxx
+x x x 
+ xxxxx
+ x x x  
+ x xxxxx
+ x x  
+ x xxxxx
+       
 xxxxx 
  x  x 
+ x xxx 
  x  x 
- x  x 
- x  x 
+xxx x 
  xxxxx
-      
-  xxxx
  x  x 
- x  x 
- x  x 
- x  x 
+    x 
+ xxxx 
+ x   
 xxxx  
 
  x   x 
 xxxxxxx
- x   x 
- x   x 
+ x x  x 
+ x x  x 
 xxxxxxx
  x   x 

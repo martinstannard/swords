@@ -19,14 +19,14 @@ module Swords
       end
     end
 
-    def find_pattern(coord, length, dir)
+    def find_pattern(vector, dir)
       pattern = ''
-      0.upto(length-1) do |i|
+      0.upto(vector.length-1) do |i|
         case dir
         when :horizontal
-          cell = get(coord[0] + i, coord[1])
+          cell = get(vector.x_pos + i, vector.y_pos)
         when :vertical
-          cell = get(coord[0], coord[1] + i)
+          cell = get(vector.x_pos, vector.y_pos + i)
         end
         pattern += (cell.nil? ? '\w' : cell)
       end
