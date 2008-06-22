@@ -53,7 +53,7 @@ desc "Run all the specs for the mapmaker plugin."
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
   t.spec_opts = ['--colour']
-  t.rcov = false
+  t.rcov = true
 end
 
 task :install => :package do
