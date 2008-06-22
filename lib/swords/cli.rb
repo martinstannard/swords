@@ -22,12 +22,12 @@ module Swords
     end
 
     def display_clues(words)
-      words.each_with_index do |word, index|
-        clues = @crossword.dictionary.dict[word]["si"].split ", "
-        clue1 = clues[rand*10 % clues.length]
-        clue2 = clues[rand*10 % clues.length]
-        clue = "#{clue1}, #{clue2}  (" + "#{word.length}".bold + ")"
-        puts "#{index}. " + clue
+      i = 1
+      words.each do |word|
+        clue = @crossword.dictionary.get_clue_for_word(word, 2)
+        clueline = "#{clue}  (" + "#{word.length}".bold + ")"
+        puts "#{i}. " + clueline
+        i = i + 1
       end
     end
 

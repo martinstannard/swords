@@ -38,24 +38,7 @@ module Swords
     end
 
     def get(x, y)
-      coord = [x,y]
-      @grid[coord]
+      @grid[[x,y]]
     end
-
-    def content
-      { :grid => @grid, :rows => @rows, :columns => @columns,  }
-    end
-
-    def display
-      @rows.times do |y|
-        @columns.times do |x|
-          coord = [x,y]
-          cell = @grid[coord]
-          print(cell.nil? ? " " : cell)
-        end
-        puts
-      end
-    end
-
   end
 end
