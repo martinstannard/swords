@@ -1,13 +1,13 @@
 module Swords
   class Pattern
     def self.random
-      Patterns.first
+      Patterns[rand(Patterns.size)]
     end
   end
 end
 
 Patterns = [
-  [
+            [
                'xxxx x  ',
                ' x x x  ',
                ' x xxxxx',
@@ -20,23 +20,46 @@ Patterns = [
                ' x x x x',
                ' x xxxxx',
                '       x',
-
-],
-[
-              'xxxxxxx xxxxxxx',
-              ' x x x x x x x ',
-              'xxxxxxxxxx xxxx',
-              ' x x x x x x x ',
-              'xxxxxxxxxxxxxxx',
-              ' x   x x x x x ',
-              'xxxxxxxxx xxxxx',
-              '   x x x x x   ',
-              'xxxxx xxxxxxxxx',
-              ' x x x x x   x ',
-              'xxxxxxxxxxxxxxx',
-              ' x x x x x x x ',
-              'xxxx xxxxxxxxxx',
-              ' x x x x x x x ',
-              'xxxxxxx xxxxxxx'
+            ],
+            [ 
+              'xxxxx ',
+              ' x  x ',
+              ' x  x ',
+              ' x  x ',
+              ' x  x ',
+              ' xxxxx'
+            ],
+            [ 
+              '  xxxx',
+              ' x  x ',
+              ' x  x ',
+              ' x  x ',
+              ' x  x ',
+              'xxxx  '
+            ],
+            [ 
+              ' x   x ',
+              'xxxxxxx',
+              ' x   x ',
+              ' x   x ',
+              'xxxxxxx',
+              ' x   x '
+            ]
 ]
-]
+# [
+#   'xxxxxxx xxxxxxx',
+#   ' x x x x x x x ',
+#   'xxxxxxxxxx xxxx',
+#   ' x x x x x x x ',
+#   'xxxxxxxxxxxxxxx',
+#   ' x   x x x x x ',
+#   'xxxxxxxxx xxxxx',
+#   '   x x x x x   ',
+#   'xxxxx xxxxxxxxx',
+#   ' x x x x x   x ',
+#   'xxxxxxxxxxxxxxx',
+#   ' x x x x x x x ',
+#   'xxxx xxxxxxxxxx',
+#   ' x x x x x x x ',
+#   'xxxxxxx xxxxxxx'
+# ]

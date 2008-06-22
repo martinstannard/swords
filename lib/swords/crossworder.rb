@@ -5,6 +5,7 @@ module Swords
     def initialize    
       @pattern = Swords::Pattern.random
       @dictionary = Swords::Dictionary.new
+      @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
       @parser = Swords::Parser.new(@pattern)
       @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
       @h_pattern = @parser.horizontal_words
@@ -13,12 +14,12 @@ module Swords
       @v_words = []
     end
 
-    def build
+    def build(iterations = 20)
       @grid = Swords::Grid.new
       horiz_words
       count = 0
-      until vert_words == true || count > 100 do
-        @grid = Swords::Grid.new
+      until vert_words == true || count == iterations do
+        @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
         @dictionary.reset
         horiz_words
         count += 1
@@ -36,7 +37,7 @@ module Swords
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = find_horiz_pattern(coord,len)
         word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-        @h_words << [word, coord]
+        @h_words << [word, coord, dir]
         @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
       end
     end
@@ -49,10 +50,15 @@ module Swords
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = find_vert_pattern(coord,len)
         word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-        @v_words << [word, coord]
+        @v_words << [word, coord, dir]
         @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
-      end
+        end
       @v_words.detect(nil) { |w| w[0].nil? }.nil?
+    end
+    
+    def new_game
+      build
+      @h_words + @v_words    
     end
 
     def display
@@ -95,13 +101,13 @@ module Swords
       pattern
     end
 
-    def stuff_into_words_horiz(line, coord)
+    def stuff_into_words_horiz(line, coord, dir)
       line.split(//).each_with_index do |char, i|
         @grid.put(coord[0] + i, coord[1], char)
       end
     end
 
-    def stuff_into_words_vert(line, coord)
+    def stuff_into_words_vert(line, coord, dir)
       line.split(//).each_with_index do |char, i|
         @grid.put(coord[0], coord[1] + i, char)
       end
