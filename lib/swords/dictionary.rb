@@ -18,11 +18,12 @@ module Swords
       find_word_from_dict(pattern, vector, @dict_words, dir) unless word
     end
 
+    # Given a word(String), gets a specified max number of clues.
     def get_clue_for_word(word, number = 2)
       return "" unless word
       # the synonymns get discarded in the while loop
-      clueline = @dict[word]["si"]
-      synonyms = clueline != nil ? clueline.split(", ") : "No clue for you!"
+      return "No clue for you!" unless @dict[word]
+      synonyms = dict[word]["si"].split(", ")
       clues = {}
       while clues.size < number && synonyms.size > 0
         clue = synonyms[rand*10 % synonyms.length]

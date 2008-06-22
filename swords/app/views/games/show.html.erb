@@ -5,9 +5,8 @@
 		<tr>
 		<% @grid.columns.times do |x|
 			cell = @grid.get(x, y) -%>
-			<!-- cell.nil? ? '' : cell -->
 			<td class="<%= cell.nil? ? 'inactive' : '' %>">
-				
+				<%= "<label>#{}</label>" %>
 			</td>
 		<% end -%>
 		</tr>
@@ -30,13 +29,9 @@
     <li><%="#{i+1}. " + c[:clue] + " (<strong>#{ c[:length] }</strong>)" %></li>
 	<% end -%>	
 	</ol>
-	<!-- <h4>Across</h4>
-	<ol class="clues">
-
-	</ol>
-	<h4>Down</h4>
-	<ol class="clues">
-
-	</ol> -->
 	
 </div>
+
+<script type="text/javascript" charset="utf-8">
+	<%= @grid.to_json %>
+</script>
