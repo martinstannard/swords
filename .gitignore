@@ -1,8 +1,12 @@
-log/*.log
 tmp/**/*
 config/database.yml
+*.swp
+pkg
+swords/log/*.log
+swords/tmp/**/*
+swords/config/database.yml
 
 # Other useful tidbits
 .DS_Store
-doc/api
-doc/app
+swords/doc/api
+swords/doc/app
