@@ -24,11 +24,9 @@ module Swords
     def display_clues(words)
       i = 1
       words.each do |word|
-        clues = @crossword.dictionary.dict[word]["si"].split ", "
-        clue1 = clues[rand*10 % clues.length]
-        clue2 = clues[rand*10 % clues.length]
-        clue = "#{clue1}, #{clue2}  (" + "#{word.length}".bold + ")"
-        puts "#{i}. " + clue
+        clue = @crossword.dictionary.get_clue_for_word(word, 2)
+        clueline = "#{clue}  (" + "#{word.length}".bold + ")"
+        puts "#{i}. " + clueline
         i = i + 1
       end
     end
