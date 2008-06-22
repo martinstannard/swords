@@ -1,6 +1,7 @@
-log/*.log
+swords/log/*.log
 tmp/**/*
 config/database.yml
+*.swp
 
 # Other useful tidbits
 .DS_Store
