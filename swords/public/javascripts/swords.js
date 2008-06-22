@@ -1,3 +1,24 @@
+function fadeUp (element, red, green, blue)
+{
+	if (element.fade) 
+	{
+		clearTimeout(element.fade);
+	}
+	element.style.backgroundColor = "rgb("+red+","+green+","+blue+")";
+	if ((red == 255) && (green == 255) && (blue == 255)) 
+	{
+		return;
+	}
+	var newred = red + Math.ceil((255 - red)/10);
+	var newgreen = green + Math.ceil((255 - green)/10);
+	var newblue = blue + Math.ceil((255 - blue)/10);
+	var repeat = function() 
+	{
+		fadeUp(element, newred, newgreen, newblue);
+	};
+	element.fade = setTimeout(repeat, 100);
+}
+
 function addLoadEvent (func) 
 {
 	var oldonload = window.onload;
@@ -15,7 +36,7 @@ function addLoadEvent (func)
 	}
 }
 
-function initialiseSword (grid)
+function initialiseSword ()
 {
 	if (!document.getElementsByTagName || !document.getElementById) 
 	{
@@ -41,20 +62,23 @@ function inspectSwordGrid (sword, grid)
 	// Get Sword's dimensions
 	var rows = sword.getElementsByTagName('tr');
 	var height = rows.length;
-	
-	
+	var width = rows[0].getElementsByTagName('td').length;
+	var swordGrid = [];
+	for (var i=0; i < grid.length; i++) 
+	{
+		var x_pos = grid[i][0][0];
+		var y_pos = grid[i][0][1];
+		var char = grid[i][1];
+		swordGrid[x_pos+''+y_pos] = char;
+	}
+	return swordGrid;
 }
 
-function findCell (grid, cell)
+function findCellValue (swordGrid, cell)
 {
-	// Here we are past a td element which is within the crossword table
-	// What do we want?
-	// 	- The column number
-	// 	- The row number
-	//	- What should exist there
-	// What do we have?
-	// 	- grid is an array of cells, containing their coords and value
-	// 	We need to find the coords (col, row) and the corresponding value in the grid variable
+	var x_pos = cell.className;
+	var y_pos = cell.parentNode.className;
+	return swordGrid[x_pos+''+y_pos];
 }
 
 function editCell ()
@@ -89,7 +113,7 @@ function saveUserInput ()
 	var user_input = document.createElement('span');
 	user_input.appendChild(value);
 	this.parentNode.replaceChild(user_input, this);
-	// crosswordIsFull(grid);
+	crosswordIsDone();
 }
 
 function saveUserInputAndMove (event) 
@@ -111,7 +135,7 @@ function saveUserInputAndMove (event)
     }
 };
 
-function crosswordIsFull (grid)
+function crosswordIsDone ()
 {
 	if (!document.getElementsByTagName || !document.getElementById) 
 	{
@@ -121,31 +145,53 @@ function crosswordIsFull (grid)
 	{
 		return false;
 	}
-	var crossword = document.getElementById('crossword');
-	var cells = crossword.getElementsByTagName('td');
+	var sword = document.getElementById('crossword');
+	var cells = sword.getElementsByTagName('td');
 	var complete = true;
+	var swordGrid = inspectSwordGrid(sword, grid);
 	for (var i=0; i < cells.length; i++) 
 	{
 		if (cells[i].className != 'inactive') 
 		{
 			// Find out what letter should be here by the cell's coords
-			cell = findCell(grid, cells[i]);
+			cellValue = findCellValue(swordGrid, cells[i]);
 			var spans = cells[i].getElementsByTagName('span');
 			if (spans.length > 0) 
 			{
 				// To do: check if saved user input is the correct letter, if it isn't set complete to false
 				var user_input = spans[0].firstChild.nodeValue;
-				if (user_input != cell['properValue']) 
+				if (user_input != cellValue) 
 				{
 					complete = false;
 				}
+			}
+			else
+			{
+				complete = false;
 			}
 		}
 	}
 	if (complete) 
 	{
-		alert("Congratulations!!! You are allowed to upload an instant Duke hit");
+		displayCongrats();
 	}
+}
+
+function displayCongrats ()
+{
+	var title = "Sword complete!";
+	var msg = "Hey, nice one! Swords is pretty intense, and this means that you are amazing because you completed a Sword. Good work!";
+	var congrats = document.createElement('div');
+	var h2 = document.createElement('h2');
+	var copy = document.createElement('p');
+	var title = document.createTextNode(title);
+	var msg = document.createTextNode(msg);
+	h2.appendChild(title);
+	copy.appendChild(msg);
+	congrats.appendChild(h2);
+	congrats.appendChild(copy);
+	document.getElementById('primary').appendChild(congrats);	
+	fadeUp(congrats, 204, 255, 102);
 }
 
 addLoadEvent(initialiseSword);

@@ -1,12 +1,11 @@
-<div class="grid_7">
+<div class="grid_7" id="primary">
 
 	<table id="crossword">
 	<%	@grid.rows.times do |y| -%>
-		<tr>
+		<tr class="<%= y %>">
 		<% @grid.columns.times do |x|
 			cell = @grid.get(x, y) -%>
-			<td class="<%= cell.nil? ? 'inactive' : '' %>">
-				<%= "<label>#{}</label>" %>
+			<td class="<%= cell.nil? ? 'inactive' : x %>">
 			</td>
 		<% end -%>
 		</tr>
@@ -33,5 +32,5 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  var grid = <%= @grid.grid.select {|k, v| !v.nil?}.to_json %>;
+  	var grid = <%= @grid.grid.select {|k, v| !v.nil?}.to_json %>;
 </script>
