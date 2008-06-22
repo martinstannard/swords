@@ -4,8 +4,8 @@ module Swords
 
     def initialize    
       @dictionary = Swords::Dictionary.new
-      @grid = Swords::Grid.new
       @pattern = Swords::Pattern.random
+      @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
       @parser = Swords::Parser.new(@pattern)
       @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
       @h_pattern = @parser.horizontal_words
@@ -39,8 +39,6 @@ module Swords
           @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
         end
       end
-      #The vertical words aren't being filled in completely. It's probably hard to find words fitting the requirements. If we do the loop we need to make it fill it could end up taking a very long time, I suppose.
-      #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
     end
 
     def display
