@@ -54,7 +54,7 @@ module Swords
     end
     
     def clues(words)
-      words.collect do |w|
+      words.compact.collect do |w|
         { :length => w.answer.size, :clue => w.clue}
       end
     end

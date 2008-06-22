@@ -18,9 +18,16 @@
 <div class="clues-box grid_4">
 	
 	<h3>Clues</h3>
+	<h4>Across</h4>
 	<ol class="clues">
-	<%	@words.each_with_index do |y, i| -%>
-		<li><%="#{i+1}. " + y[3]%></li>
+	<%	@h_clues.each_with_index do |c, i| -%>
+    <li><%="#{i+1}. " + c[:clue] + " (<strong>#{ c[:length] }</strong>)" %></li>
+	<% end -%>	
+	</ol>
+	<h4>Down</h4>
+	<ol class="clues">
+	<%	@v_clues.each_with_index do |c, i| -%>
+    <li><%="#{i+1}. " + c[:clue] + " (<strong>#{ c[:length] }</strong>)" %></li>
 	<% end -%>	
 	</ol>
 	<!-- <h4>Across</h4>
