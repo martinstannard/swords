@@ -19,3 +19,8 @@
 <% end -%>	
 </table>
 
+<table class="clues">
+<%	@words.each_with_index do |y, i| -%>
+	<tr><td><%="#{i+1}. " + y[3]%></td></tr>
+<% end -%>	
+</table>

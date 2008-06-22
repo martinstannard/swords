@@ -59,3 +59,9 @@ table.crossword td label	{
 	left: 1px;
 	font-size: 62.5%;
 }
+
+/** Clues **/
+table.clues	{ 
+	margin: 0 auto;
+	align: center;
+}

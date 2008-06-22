@@ -20,6 +20,7 @@ module Swords
     end
     
     def get_clue_for_word(word, number)
+          return ""  unless word
           # the synonymns get discarded in the while loop
           clueline = @dict[word]["si"]
           synonyms = clueline != nil ? clueline.split(", ") : "No clue for you!"
@@ -27,7 +28,7 @@ module Swords
           while clues.size < number && synonyms.size > 0
             clue = synonyms[rand*10 % synonyms.length]
             synonyms.delete(clue) # ensures we exit
-            if !clues[clue] && clue[word] == nil
+            if clue[word] == nil && !clues[clue]
               clues[clue] = true
             end
           end

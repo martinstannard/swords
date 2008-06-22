@@ -37,7 +37,8 @@ module Swords
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = @grid.find_pattern(coord, len, direction)
         word = @dictionary.find_word(pattern, coord, len, direction, @requested_words)
-        [word, coord, direction]
+        clue = @dictionary.get_clue_for_word(word, 2)
+        [word, coord, direction, clue]
       end
       words.each { |word| @grid.insert_word(*word) if word[0]}
     end
