@@ -42,7 +42,7 @@ module Swords
         md = line.match(r)
         if !md.nil? && !@used_words[dir].include?(line) && !line.match(/[A-Z]/)
           word = Word.new(line, coord[0], coord[1], dir, get_clue_for_word(line)) 
-          @used_words[dir] << word
+          @used_words[dir] << line
           return word
         end
       end

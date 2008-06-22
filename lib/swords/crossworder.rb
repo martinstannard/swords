@@ -1,7 +1,7 @@
 
 module Swords
   class Crossworder
-    attr_accessor :dictionary, :grid, :requested_words
+    attr_accessor :dictionary, :grid, :requested_words, :h_words, :v_words
 
     def initialize    
       @pattern = Swords::Pattern.random
@@ -50,9 +50,16 @@ module Swords
       @v_words.detect(nil) { |w| w.nil? || w.answer.nil? }.nil?
     end
     
+    def clues(words)
+      words.collect do |w|
+        { :length => w.answer.size, :clue => w.clue}
+      end
+    end
+
     def new_game
       build
-      { :words => @h_words + @v_words, :grid => @grid }
+      { :words => @h_words + @v_words, :grid => @grid,
+        :h_clues => clues(@h_words), :v_clues => clues(@v_words)}
     end
 
   end
