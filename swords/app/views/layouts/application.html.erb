@@ -7,6 +7,7 @@
 
 	<title>Swords!</title>
 	<link rel="stylesheet" href="/stylesheets/default.css" type="text/css" media="screen, projector" charset="utf-8" />
+	<script src="/javascripts/swords.js" type="text/javascript" charset="utf-8"></script>
 	
 </head>
 
@@ -14,10 +15,16 @@
 
 	<div class="container_12">
 		
-		<h1><a href="/game/show/" title="Swords! home" rel="home">Swords!</a></h1>
-		<!-- <h2>Where our minds and the minds of dictionaries defeat each other</h2> -->
-		
-		<%= yield %>
+		<div class="header">
+			
+			<h1><a href="/games/show/" title="Swords! home" rel="home">Swords!</a></h1>
+			
+		</div>
+		<div class="content grid_12">
+			
+			<%= yield %>
+			
+		</div>		
 		
 	</div>
 

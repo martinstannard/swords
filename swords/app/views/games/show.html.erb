@@ -1,26 +1,35 @@
-<!-- 
-	1. How big is the grid?
-		- Build a table of the grid's dimensions
-	2. Where do words occur in the grid?
-		- Make the crossword table show the inactive and active cells
-	3. Plug in the letters where they belong on the crossword
-	 -->
+<div class="grid_7">
 
-<table class="crossword">
-<%	@grid.rows.times do |y| -%>
-	<tr>
-	<% @grid.columns.times do |x|
-		cell = @grid.get(x, y) -%>
-		<td class="<%= cell.nil? ? 'inactive' : '' %>">
-			<%= cell.nil? ? '' : cell %>
-		</td>
-	<% end -%>
-	</tr>
-<% end -%>	
-</table>
+	<table id="crossword">
+	<%	@grid.rows.times do |y| -%>
+		<tr>
+		<% @grid.columns.times do |x|
+			cell = @grid.get(x, y) -%>
+			<!-- cell.nil? ? '' : cell -->
+			<td class="<%= cell.nil? ? 'inactive' : '' %>">
+				
+			</td>
+		<% end -%>
+		</tr>
+	<% end -%>	
+	</table>
+	
+</div>
+<div class="clues-box grid_4">
+	
+	<h3>Clues</h3>
+	<ol class="clues">
+	<%	@words.each_with_index do |y, i| -%>
+		<li><%="#{i+1}. " + y[3]%></li>
+	<% end -%>	
+	</ol>
+	<!-- <h4>Across</h4>
+	<ol class="clues">
 
-<table class="clues">
-<%	@words.each_with_index do |y, i| -%>
-	<tr><td><%="#{i+1}. " + y[3]%></td></tr>
-<% end -%>	
-</table>
+	</ol>
+	<h4>Down</h4>
+	<ol class="clues">
+
+	</ol> -->
+	
+</div>

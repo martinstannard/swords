@@ -17,7 +17,7 @@ module Swords
     end
 
     def build(iterations = 20)
-      @grid = Swords::Grid.new
+      @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
       horiz_words
       count = 0
       until vert_words == true || count == iterations do
@@ -27,8 +27,6 @@ module Swords
         count += 1
         puts "Retrying....#{count}"
       end
-      #The vertical words aren't being filled in completely. It's probably hard to find words fitting the requirements. If we do the loop we need to make it fill it could end up taking a very long time, I suppose.
-      #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
     end
 
     def process_vectors(vectors, direction)
