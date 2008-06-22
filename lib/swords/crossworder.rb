@@ -21,7 +21,7 @@ module Swords
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = find_horiz_pattern(coord,len)
         word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-        @h_words << [word, coord]
+        @h_words << [word, coord, dir]
         @h_words.each { |word| stuff_into_words_horiz(*word) if word[0]}
       end
     
@@ -35,10 +35,15 @@ module Swords
           pattern = find_vert_pattern(coord,len)
           word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
           all_is_well = false if word.nil?
-          @v_words << [word, coord]
+          @v_words << [word, coord, dir]
           @v_words.each { |word| stuff_into_words_vert(*word) if word[0]}
         end
       end
+    end
+    
+    def new_game
+      build
+      @h_words + @v_words    
     end
 
     def display
@@ -81,13 +86,13 @@ module Swords
       pattern
     end
 
-    def stuff_into_words_horiz(line, coord)
+    def stuff_into_words_horiz(line, coord, dir)
       line.split(//).each_with_index do |char, i|
         @grid.put(coord[0] + i, coord[1], char)
       end
     end
 
-    def stuff_into_words_vert(line, coord)
+    def stuff_into_words_vert(line, coord, dir)
       line.split(//).each_with_index do |char, i|
         @grid.put(coord[0], coord[1] + i, char)
        end

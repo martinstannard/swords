@@ -1,7 +1,7 @@
 module Swords
   class Pattern
     def self.random
-      Patterns.first
+      Patterns[rand(Patterns.size)]
     end
   end
 end
