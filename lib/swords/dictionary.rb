@@ -19,6 +19,21 @@ module Swords
       find_word_from_dict(pattern, coord, length, @dict_words, dir) unless word
     end
     
+    def get_clue_for_word(word, number)
+          # the synonymns get discarded in the while loop
+          clueline = @dict[word]["si"]
+          synonyms = clueline != nil ? clueline.split(", ") : "No clue for you!"
+          clues = {}
+          while clues.size < number && synonyms.size > 0
+            clue = synonyms[rand*10 % synonyms.length]
+            synonyms.delete(clue) # ensures we exit
+            if !clues[clue] && clue[word] == nil
+              clues[clue] = true
+            end
+          end
+          clues.keys.join ", "
+    end
+    
     def find_word_from_dict(pattern, coord, length, word_list, dir)
       word_list.each do |l|
         line = l.to_s.strip
