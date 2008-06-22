@@ -13,9 +13,9 @@ module Swords
       @used_words = { :horizontal  =>  [], :vertical  =>  [] }
     end
 
-    def find_word(pattern, coord, length, dir, requested_words)
-      word = find_word_from_dict(pattern, coord, length, requested_words, dir)
-      find_word_from_dict(pattern, coord, length, @dict_words, dir) unless word
+    def find_word(pattern, vector, dir, requested_words)
+      word = find_word_from_dict(pattern, vector, requested_words, dir)
+      find_word_from_dict(pattern, vector, @dict_words, dir) unless word
     end
 
     def get_clue_for_word(word, number = 2)
@@ -34,14 +34,14 @@ module Swords
       clues.keys.join ", "
     end
 
-    def find_word_from_dict(pattern, coord, length, word_list, dir)
+    def find_word_from_dict(pattern, vector, word_list, dir)
       word_list.each do |l|
         line = l.to_s.strip
-        next unless line.size == length
+        next unless line.size == vector.length
         r = Regexp.new(pattern)
         md = line.match(r)
         if !md.nil? && !@used_words[dir].include?(line) && !line.match(/[A-Z]/)
-          word = Word.new(line, coord[0], coord[1], dir, get_clue_for_word(line)) 
+          word = Word.new(line, vector.x_pos, vector.y_pos, dir, get_clue_for_word(line)) 
           @used_words[dir] << line
           return word
         end
