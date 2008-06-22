@@ -1,3 +1,4 @@
+
 module Swords
   class Crossworder
     attr_accessor :dictionary, :grid, :requested_words
@@ -9,8 +10,8 @@ module Swords
       @grid = Swords::Grid.new(@dimensions[:width], @dimensions[:height])
       @parser = Swords::Parser.new(@pattern)
       @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
-      @h_pattern = @parser.horizontal_words
-      @v_pattern = @parser.vertical_words
+      @horizontal_vectors = @parser.horizontal_words
+      @vertical_vectors = @parser.vertical_words
       @h_words = []
       @v_words = []
     end
@@ -30,30 +31,23 @@ module Swords
       #Either we don't care, or we rethink this... If we didn't care we can put it into the rails app and the UI can be sorted and the caring can happen later!
     end
 
-    def horiz_words
-      @h_words = []
-      @h_pattern.each do |word_vector|
-        dir = :horizontal
+    def process_vectors(vectors, direction)
+      words = vectors.collect do |word_vector|
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
-        pattern = @grid.find_pattern(coord, len, dir)
-        word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-        @h_words << [word, coord, dir]
-        @h_words.each { |word| @grid.insert_word(*word) if word[0]}
+        pattern = @grid.find_pattern(coord, len, direction)
+        word = @dictionary.find_word(pattern, coord, len, direction, @requested_words)
+        [word, coord, direction]
       end
+      words.each { |word| @grid.insert_word(*word) if word[0]}
+    end
+
+    def horiz_words
+      @h_words = process_vectors(@parser.horizontal_words, :horizontal)
     end
 
     def vert_words
-      @v_words = []
-      @v_pattern.each do |word_vector|
-        dir = :vertical
-        len = word_vector.length
-        coord = [word_vector.x_pos,word_vector.y_pos]
-        pattern = @grid.find_pattern(coord, len, dir)
-        word = @dictionary.find_word(pattern, coord, len, dir, @requested_words)
-        @v_words << [word, coord, dir]
-        @v_words.each { |word| @grid.insert_word(*word) if word[0]}
-        end
+      @v_words = process_vectors(@parser.vertical_words, :vertical)
       @v_words.detect(nil) { |w| w[0].nil? }.nil?
     end
     

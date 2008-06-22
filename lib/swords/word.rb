@@ -1,4 +1,3 @@
-require 'yaml'
 module Swords
   class Word
     attr_accessor :answer, :x, :y, :direction, :clue
