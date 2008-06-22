@@ -20,13 +20,19 @@ module Swords
       @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
       horiz_words
       count = 0
-      until vert_words == true || count == iterations do
+      puts "Starting render #{count}"
+      while filled_all_slots == false && count < iterations do
         @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
         @dictionary.reset
         horiz_words
+        vert_words
         count += 1
         puts "Retrying....#{count}"
       end
+    end
+
+    def filled_all_slots
+      @horizontal_vectors.compact.size + @vertical_vectors.compact.size == @h_words.compact.size + @v_words.compact.size
     end
 
     def process_vectors(vectors, direction)
@@ -45,7 +51,6 @@ module Swords
 
     def vert_words
       @v_words = process_vectors(@parser.vertical_words, :vertical)
-      @v_words.detect(nil) { |w| w.nil? || w.answer.nil? }.nil?
     end
     
     def clues(words)
