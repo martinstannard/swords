@@ -8,13 +8,13 @@ module Swords
       @grid = Hash.new {|h, k| h[k] = nil }
     end
 
-    def insert_word(word,coord, dir, clue)
-      word.split(//).each_with_index do |char, i|
-        case dir
+    def insert_word(word)
+      word.answer.split(//).each_with_index do |char, i|
+        case word.direction
         when :horizontal
-          put(coord[0] + i, coord[1], char)
+          put(word.x + i, word.y, char)
         when :vertical
-          put(coord[0], coord[1] + i, char)
+          put(word.x, word.y + i, char)
         end
       end
     end

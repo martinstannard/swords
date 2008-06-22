@@ -36,11 +36,9 @@ module Swords
         len = word_vector.length
         coord = [word_vector.x_pos,word_vector.y_pos]
         pattern = @grid.find_pattern(coord, len, direction)
-        word = @dictionary.find_word(pattern, coord, len, direction, @requested_words)
-        clue = @dictionary.get_clue_for_word(word, 2)
-        [word, coord, direction, clue]
+        @dictionary.find_word(pattern, coord, len, direction, @requested_words)
       end
-      words.each { |word| @grid.insert_word(*word) if word[0]}
+      words.each { |word| @grid.insert_word(word) if word && word.answer}
     end
 
     def horiz_words
@@ -49,7 +47,7 @@ module Swords
 
     def vert_words
       @v_words = process_vectors(@parser.vertical_words, :vertical)
-      @v_words.detect(nil) { |w| w[0].nil? }.nil?
+      @v_words.detect(nil) { |w| w.nil? || w.answer.nil? }.nil?
     end
     
     def new_game

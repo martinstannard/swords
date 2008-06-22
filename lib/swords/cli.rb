@@ -24,8 +24,8 @@ module Swords
     def display_clues(words)
       i = 1
       words.each do |word|
-        clue = @crossword.dictionary.get_clue_for_word(word, 2)
-        clueline = "#{clue}  (" + "#{word.length}".bold + ")"
+        clue = word.clue
+        clueline = "#{clue}  (" + "#{word.answer.length}".bold + ")"
         puts "#{i}. " + clueline
         i = i + 1
       end
