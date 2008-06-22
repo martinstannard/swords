@@ -4,8 +4,9 @@ module Swords
 
     def initialize    
       @pattern = Swords::Pattern.random
+      @dimensions = { :width => @pattern[0].size, :height => @pattern.size}
       @dictionary = Swords::Dictionary.new
-      @grid = Swords::Grid.new(@pattern[0].size, @pattern.size)
+      @grid = Swords::Grid.new(@dimensions[:width], @dimensions[:height])
       @parser = Swords::Parser.new(@pattern)
       @requested_words = [] #options[:requested_words] || ['rails','ruby','beer','jour']
       @h_pattern = @parser.horizontal_words
@@ -58,7 +59,7 @@ module Swords
     
     def new_game
       build
-      @h_words + @v_words    
+      { :words => @h_words + @v_words, :grid => @grid }
     end
 
     def display
