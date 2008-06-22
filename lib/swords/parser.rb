@@ -26,12 +26,11 @@
 # =====
 # parser = Parser.new(grid)
 # word_vectors = parser.generate
-    
 
 require 'strscan'
 require 'Matrix'
 
-module Crossword
+module Swords 
   class Parser
     class WordVector < Struct.new(:direction, :x_pos, :y_pos, :length); end
   

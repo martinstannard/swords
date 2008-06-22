@@ -1,1 +1,8 @@
-*.swp
+log/*.log
+tmp/**/*
+config/database.yml
+
+# Other useful tidbits
+.DS_Store
+doc/api
+doc/app

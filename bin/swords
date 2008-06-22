@@ -2,8 +2,8 @@
 
 $: << File.dirname(__FILE__) + '/../lib'
 
-require 'crossword'
+require 'swords'
 
-cw = Crossworder.new
+cw = Swords::Crossworder.new
 cw.build
 cw.display

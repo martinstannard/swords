@@ -1,4 +1,4 @@
-module Crossword
+module Swords
   class Grid
     def initialize(columns = 15, rows = 15)
       @columns = columns

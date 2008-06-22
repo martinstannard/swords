@@ -1,3 +1,10 @@
+module Swords
+  class Pattern
+    def self.random
+      Patterns.first
+    end
+  end
+end
 
 Patterns = [
             [
@@ -35,4 +42,3 @@ Patterns = [
               'xxxxxxx xxxxxxx'
             ]
 ]
-
