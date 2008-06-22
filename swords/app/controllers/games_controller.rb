@@ -7,7 +7,7 @@ class GamesController < ApplicationController
     cw = Crossworder.new
     game = cw.new_game
     @words = game[:words]
-    @grid = game[:grid].content
+    @grid = game[:grid]
     
   end
   

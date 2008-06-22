@@ -1,0 +1,21 @@
+<!-- 
+	1. How big is the grid?
+		- Build a table of the grid's dimensions
+	2. Where do words occur in the grid?
+		- Make the crossword table show the inactive and active cells
+	3. Plug in the letters where they belong on the crossword
+	 -->
+
+<table class="crossword">
+<%	@grid.rows.times do |y| -%>
+	<tr>
+	<% @grid.columns.times do |x|
+		cell = @grid.get(x, y) -%>
+		<td class="<%= cell.nil? ? 'inactive' : '' %>">
+			<%= cell.nil? ? '' : cell %>
+		</td>
+	<% end -%>
+	</tr>
+<% end -%>	
+</table>
+
