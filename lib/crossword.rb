@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 require 'pathname'
+require 'rubygems'
+require 'colored'
 require "yaml"
 require 'pp'
 require 'crossword/dictionary'
@@ -70,9 +72,9 @@ class Crossworder
 
   def display
     @grid.display
-    puts "Across:"
+    puts "Across:".bold
     display_clues @dictionary.used_words[:horizontal]
-    puts "Down:"
+    puts "Down:".bold
     display_clues @dictionary.used_words[:vertical]
   end
 
@@ -83,7 +85,9 @@ class Crossworder
         clue = "No clue"
       else
         clues = @dictionary.dict[word]["si"].split ", "
-        clue = clues[rand*10 % clues.length]
+        clue1 = clues[rand*10 % clues.length]
+        clue2 = clues[rand*10 % clues.length]
+        clue = "#{clue1}, #{clue2}  (" + "#{word.length}".bold + ")"
       end
       puts "#{i}. " + clue
       i = i + 1
