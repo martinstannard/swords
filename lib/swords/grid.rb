@@ -1,5 +1,7 @@
 module Swords
   class Grid
+    attr_accessor :columns, :grid, :rows
+
     def initialize(columns = 15, rows = 15)
       @columns = columns
       @rows = rows
@@ -32,8 +34,7 @@ module Swords
     end
 
     def put(x, y, value)
-      coord = [x,y]
-      @grid[coord] = value
+      @grid[[x,y]] = value
     end
 
     def get(x, y)
@@ -55,5 +56,6 @@ module Swords
         puts
       end
     end
+
   end
 end
