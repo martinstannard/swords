@@ -54,11 +54,41 @@ function editCell ()
 					var user_input = document.createElement('span');
 					user_input.appendChild(value);
 					this.parentNode.replaceChild(user_input, this);
+					crosswordIsFull();
 				}
 				this.appendChild(input);
 				input.focus();
 			}
 		}
+	}
+}
+
+function crosswordIsFull ()
+{
+	if (!document.getElementsByTagName || !document.getElementById) 
+	{
+		return false;
+	}
+	if (!document.getElementById('crossword')) 
+	{
+		return false;
+	}
+	var crossword = document.getElementById('crossword');
+	var cells = crossword.getElementsByTagName('td');
+	var complete = true;
+	for (var i=0; i < cells.length; i++) 
+	{
+		if (cells[i].className != 'inactive') 
+		{
+			if (cells[i].getElementsByTagName('span').length == 0) 
+			{
+				complete = false;
+			}
+		}
+	}
+	if (complete) 
+	{
+		alert('You have filled it in');
 	}
 }
 
