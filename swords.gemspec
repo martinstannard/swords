@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email = %q{swords@swords.com}
   s.executables = ["swords"]
   s.extra_rdoc_files = ["README"]
-  s.files = ["README", "Rakefile", "bin/swords", "lib/swords", "lib/swords/cli.rb", "lib/swords/crossworder.rb", "lib/swords/dictionary.rb", "lib/swords/grid.rb", "lib/swords/parser.rb", "lib/swords/patterns.rb", "lib/swords.rb", "spec/crossword_spec.rb", "yaml/dictionary.yml"]
+  s.files = ["README", "Rakefile", "bin/swords", "lib/crossword", "lib/swords", "lib/swords/cli.rb", "lib/swords/crossworder.rb", "lib/swords/dictionary.rb", "lib/swords/grid.rb", "lib/swords/parser.rb", "lib/swords/patterns.rb", "lib/swords/word.rb", "lib/swords.rb", "yaml/dictionary.yml"]
   s.has_rdoc = true
   s.homepage = %q{http://swords.com}
   s.require_paths = ["lib"]
