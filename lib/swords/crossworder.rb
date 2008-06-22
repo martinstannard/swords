@@ -62,26 +62,6 @@ module Swords
       { :words => @h_words + @v_words, :grid => @grid }
     end
 
-    def display
-      @grid.display
-      puts "Across:".bold
-      display_clues @dictionary.used_words[:horizontal]
-      puts "Down:".bold
-      display_clues @dictionary.used_words[:vertical]
-    end
-
-    def display_clues(words)
-      i = 1
-      words.each do |word|
-        clues = @dictionary.dict[word]["si"].split ", "
-        clue1 = clues[rand*10 % clues.length]
-        clue2 = clues[rand*10 % clues.length]
-        clue = "#{clue1}, #{clue2}  (" + "#{word.length}".bold + ")"
-        puts "#{i}. " + clue
-        i = i + 1
-      end
-    end
-
     def find_horiz_pattern(coord, length)
       pattern = ''
       0.upto(length-1) do |i|

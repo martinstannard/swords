@@ -4,6 +4,4 @@ $: << File.dirname(__FILE__) + '/../lib'
 
 require 'swords'
 
-cw = Swords::Crossworder.new
-cw.build
-cw.display
+Swords::CLI.execute
