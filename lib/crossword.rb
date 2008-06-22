@@ -6,6 +6,8 @@ require 'crossword/dictionary'
 require 'crossword/grid'
 require 'crossword/parser'
 
+module Crossword; end
+
 class Crossworder
   attr_accessor :dictionary, :grid, :requested_words
 
