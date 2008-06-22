@@ -45,21 +45,19 @@ module Swords
 
     def display
       @grid.display
-      puts "Across:"
+      puts "Across:".bold
       display_clues @dictionary.used_words[:horizontal]
-      puts "Down:"
+      puts "Down:".bold
       display_clues @dictionary.used_words[:vertical]
     end
 
     def display_clues(words)
       i = 1
       words.each do |word|
-        if @dictionary.dict[word]["si"].nil?
-          clue = "No clue"
-        else
-          clues = @dictionary.dict[word]["si"].split ", "
-          clue = clues[rand*10 % clues.length]
-        end
+        clues = @dictionary.dict[word]["si"].split ", "
+        clue1 = clues[rand*10 % clues.length]
+        clue2 = clues[rand*10 % clues.length]
+        clue = "#{clue1}, #{clue2}  (" + "#{word.length}".bold + ")"
         puts "#{i}. " + clue
         i = i + 1
       end
