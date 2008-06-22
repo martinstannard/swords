@@ -79,8 +79,12 @@ class Crossworder
   def display_clues(words)
     i = 1
     words.each do |word|
-      clues = @dictionary.dict[word]["si"].split ", "
-      clue = clues[rand*10 % clues.length]
+      if @dictionary.dict[word]["si"].nil?
+        clue = "No clue"
+      else
+        clues = @dictionary.dict[word]["si"].split ", "
+        clue = clues[rand*10 % clues.length]
+      end
       puts "#{i}. " + clue
       i = i + 1
     end
