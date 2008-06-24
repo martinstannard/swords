@@ -1,15 +1,15 @@
-xxxx x  
- x x x  
- x xxxxx
+xxxx x x
+ x x x x
+ x xxx x
  x x x x
  x xxxxx
  x     x
-xxxx x  
+xxxx x x
  x x x  
  x xxxxx
- x x x x
+ x x   x
  x xxxxx
-       x
+   x   x
 
 xxxxx  
 x x x  
@@ -39,3 +39,10 @@ xxxxxxx
  x x  x 
 xxxxxxx
  x   x 
+
+xxx      x   x  x
+x x      x   x  x
+xxx  x x xxx xxxx
+x  x x x x x    x
+x  x x x x x    x
+x  x xxx xxx xxxx
