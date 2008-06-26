@@ -62,3 +62,6 @@ table#crossword td label	{
 	left: 1px;
 	font-size: 62.5%;
 }
+.clues-box {
+  font-size :150%;
+}
