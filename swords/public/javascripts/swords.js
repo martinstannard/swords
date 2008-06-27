@@ -52,7 +52,7 @@ function initialiseSword ()
 	{
 		if (cells[i].className != 'inactive') 
 		{
-			cells[i].onclick = editCell;
+			cells[i].onclick = selectCell;
 		}
 	}
 }
@@ -81,28 +81,37 @@ function findCellValue (swordGrid, cell)
 	return swordGrid[x_pos+''+y_pos];
 }
 
-function editCell ()
+function selectCell (cell)
 {
+	if (this.nodeName == 'TD') 
+	{
+		var cell = this;
+	}
+	else
+	{
+		var cell = cell;
+	}
+	// WHY is it losing focus when there is no value? This only applies to keyboard navigation.
 	var value = '';
 	// Is there any existing user input?
-	if (this.getElementsByTagName('span').length > 0) 
+	if (cell.getElementsByTagName('span').length > 0) 
 	{
-		var spans = this.getElementsByTagName('span');
+		var spans = cell.getElementsByTagName('span');
 		// Save its value
 		var existing_input = spans[0];	// There *should* be only one
 		value = existing_input.firstChild.nodeValue;
 		for (var i=0; i < spans.length; i++) 
 		{
-			this.removeChild(spans[i]);
+			cell.removeChild(spans[i]);
 		}
 	}
 	// Create the input
 	var input = document.createElement('input');
 	input.setAttribute('maxlength', '1');
 	input.setAttribute('value', value);
-	// input.onkeypress = saveUserInputAndMove;
+	input.onkeypress = saveUserInputAndMove;
 	input.onblur = saveUserInput;
-	this.appendChild(input);
+	cell.appendChild(input);
 	input.focus();
 }
 
@@ -116,23 +125,83 @@ function saveUserInput ()
 	crosswordIsDone();
 }
 
-function saveUserInputAndMove (event) 
+function saveUserInputAndMove (event)
 {
-	// Handle the direction arrows when pressed
-	var left = 37;
-	var up = 38;
-	var right = 39;
-	var down = 40;
-	switch(event.keyCode) {
-		case left:
-		break;
-		case up:
-		break;
-		case right:  
-		break;
-		case down:  
-		break;
-    }
+	var key = event.keyCode;
+	if (key > 36 && key < 41) 
+	{
+		// Save the user input
+		var cell = this.parentNode;
+		var value = document.createTextNode(this.value);
+		var user_input = document.createElement('span');
+		user_input.appendChild(value);
+		cell.replaceChild(user_input, this);
+		crosswordIsDone();
+		// Handle the direction arrows when pressed
+		var left = 37;
+		var up = 38;
+		var right = 39;
+		var down = 40;
+		// Get rows
+		var rows = document.getElementById('crossword').getElementsByTagName('tr');
+		switch(event.keyCode) {
+			case left:
+				var leftCell = cell.previousSibling.previousSibling;
+				if (leftCell && leftCell.className != 'inactive') 
+				{
+					selectCell(leftCell);		
+				}	
+				else
+				{
+					selectCell(cell);
+				}
+				break;
+			case right:  
+				var rightCell = cell.nextSibling.nextSibling;
+				if (rightCell && rightCell.className != 'inactive') 
+				{
+					selectCell(rightCell);
+				}	
+				else
+				{
+					selectCell(cell);
+				}
+				break;
+			case up:
+				var y = cell.parentNode.className;
+				y--;
+				if (y >= 0) 
+				{
+					var aboveCell = rows[y].getElementsByTagName('td')[cell.className];
+					if (aboveCell && aboveCell.className != 'inactive') 
+					{
+						selectCell(aboveCell);
+					}
+					else
+					{
+						selectCell(cell);
+					}
+				}
+				break;
+			case down:  
+				var y = cell.parentNode.className;
+				y++;
+				if (y < rows.length) 
+				{
+					var belowCell = rows[y].getElementsByTagName('td')[cell.className];
+					if (belowCell && belowCell.className != 'inactive') 
+					{
+						selectCell(belowCell);
+					}
+					else
+					{
+						selectCell(cell);
+					}
+				}
+				break;
+	    }
+		return false;
+	}
 };
 
 function crosswordIsDone ()
