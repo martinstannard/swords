@@ -109,7 +109,7 @@ function selectCell (cell)
 	var input = document.createElement('input');
 	input.setAttribute('maxlength', '1');
 	input.setAttribute('value', value);
-	input.onkeypress = saveUserInputAndMove;
+	input.onkeydown = saveUserInputAndMove;
 	input.onblur = saveUserInput;
 	cell.appendChild(input);
 	input.focus();
