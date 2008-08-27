@@ -1,4 +1,5 @@
-<div class="grid_7" id="primary">
+<a href="#help-info" title="Show the help box, please!" id="show-help"><strong>Help me!</strong></a>
+<div class="grid_8" id="primary">
 
 	<table id="crossword">
 	<%	@grid.rows.times do |y| -%>
@@ -11,9 +12,17 @@
 		</tr>
 	<% end -%>	
 	</table>
+	<div id="help-info" class="box">
+
+		<a href="#help-info" title="Close the help box, please!" class="close"><strong>&times;</strong></a>
+		<h3><em>This super&ndash;tricky crossword was lovingly generated for you by Swords</em></h3>
+		<p>Click on a white square to type in it. Once you've done that you can move around with your arrow keys. From then on it's a breeze! When you have completed the Sword correctly a kind message will arise telling you that you <em>truly</em> are fantastic.</p>
+
+	</div>
+	
 	
 </div>
-<div class="clues-box grid_4">
+<div class="clues-box grid_3">
 	
 	<h3>Clues</h3>
 	<h4>Across</h4>

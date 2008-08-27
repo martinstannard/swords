@@ -261,4 +261,36 @@ function displayCongrats ()
 	fadeUp(congrats, 204, 255, 102);
 }
 
+function prepareHelpInfo ()
+{
+	if (!document.getElementById || !document.getElementsByTagName) return false;
+	if (!document.getElementById('help-info') || !document.getElementById('show-help')) return false;
+	// Get the elements
+	var showHelp = document.getElementById('show-help');
+	var helpInfo = document.getElementById('help-info');
+	// Hide the show help thing and set it to trigger the help to show fast
+	showHelp.onclick = function() 
+	{
+		$('#help-info').show('fast');
+		$('#show-help').hide();
+	};
+	$('#show-help').hide();
+	// Prepare the hide help info thing
+	var anchors = helpInfo.getElementsByTagName('a');
+	for (var i=0; i < anchors.length; i++) 
+	{
+		if (anchors[i].className == 'close') 
+		{
+			anchors[i].onclick = function() 
+			{
+				$('#help-info').hide('fast');
+				$('#show-help').show();
+				fadeUp(showHelp, 255, 255, 102);
+				return false;
+			};
+		}
+	}
+}
+
 addLoadEvent(initialiseSword);
+addLoadEvent(prepareHelpInfo);
