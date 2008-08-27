@@ -135,7 +135,11 @@ function saveUserInputAndMove (event)
 		var value = document.createTextNode(this.value);
 		var user_input = document.createElement('span');
 		user_input.appendChild(value);
-		cell.replaceChild(user_input, this);
+		while (cell.hasChildNodes())
+		{
+			cell.removeChild(cell.lastChild);
+		}
+		cell.appendChild(user_input);
 		crosswordIsDone();
 		// Handle the direction arrows when pressed
 		var left = 37;
@@ -144,28 +148,26 @@ function saveUserInputAndMove (event)
 		var down = 40;
 		// Get rows
 		var rows = document.getElementById('crossword').getElementsByTagName('tr');
+		// ? Hacky move staller
+		var moved = false;
 		switch(event.keyCode) {
 			case left:
 				var leftCell = cell.previousSibling.previousSibling;
 				if (leftCell && leftCell.className != 'inactive') 
 				{
-					selectCell(leftCell);		
-				}	
-				else
-				{
-					selectCell(cell);
+					selectCell(leftCell);
+					moved = true;
 				}
+				if (!moved) selectCell(cell);
 				break;
 			case right:  
 				var rightCell = cell.nextSibling.nextSibling;
 				if (rightCell && rightCell.className != 'inactive') 
 				{
 					selectCell(rightCell);
-				}	
-				else
-				{
-					selectCell(cell);
+					moved = true;
 				}
+				if (!moved) selectCell(cell);
 				break;
 			case up:
 				var y = cell.parentNode.className;
@@ -176,12 +178,10 @@ function saveUserInputAndMove (event)
 					if (aboveCell && aboveCell.className != 'inactive') 
 					{
 						selectCell(aboveCell);
-					}
-					else
-					{
-						selectCell(cell);
+						moved = true;
 					}
 				}
+				if (!moved) selectCell(cell);
 				break;
 			case down:  
 				var y = cell.parentNode.className;
@@ -192,12 +192,10 @@ function saveUserInputAndMove (event)
 					if (belowCell && belowCell.className != 'inactive') 
 					{
 						selectCell(belowCell);
-					}
-					else
-					{
-						selectCell(cell);
+						moved = true;
 					}
 				}
+				if (!moved) selectCell(cell);
 				break;
 	    }
 		return false;
